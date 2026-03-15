@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ru's Table</title>
+  <meta name="description" content="Ru Chen — culinary explorer and host. Explore my dishes and reserve a seat at my table.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* =============================================================
+       TOKENS
+    ============================================================= */
+    :root {
+      --bg:         #0C0B09;
+      --bg2:        #111009;
+      --bg3:        #171510;
+      --bg-input:   #1C1A15;
+      --gold:       #C9A870;
+      --gold-lt:    #D9BC90;
+      --gold-bg:    rgba(201,168,112,0.08);
+      --gold-bd:    rgba(201,168,112,0.20);
+      --text:       #E8E0D0;
+      --text2:      #7A7060;
+      --text3:      #4A4438;
+      --rule:       rgba(201,168,112,0.14);
+      --rule2:      rgba(201,168,112,0.22);
+      --ff:         'Cormorant Garamond', Georgia, serif;
+      --ffs:        'Inter', system-ui, sans-serif;
+      --nav:        76px;
+    }
+
+    /* =============================================================
+       RESET
+    ============================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--ff);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* Subtle grain texture */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.022; pointer-events: none; z-index: 9999;
+    }
+
+    /* =============================================================
+       LAYOUT
+    ============================================================= */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 56px; }
+    @media (max-width: 768px) { .wrap { padding: 0 24px; } }
+
+    .section-label {
+      font-family: var(--ffs);
+      font-size: 11px; font-weight: 400;
+      letter-spacing: 0.36em; text-transform: uppercase;
+      color: var(--gold); display: block; text-align: center;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: var(--ff);
+      font-size: clamp(38px, 5.5vw, 70px);
+      font-weight: 400; line-height: 1.08;
+      color: var(--text); text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* Reveal animation */
+    .rv {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .rv.in { opacity: 1; transform: translateY(0); }
+    .rv.d1 { transition-delay: 0.10s; }
+    .rv.d2 { transition-delay: 0.20s; }
+    .rv.d3 { transition-delay: 0.30s; }
+    .rv.d4 { transition-delay: 0.40s; }
+
+    /* =============================================================
+       NAVIGATION  — matches Aurélien: logo | links | outlined CTA
+    ============================================================= */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav); z-index: 300;
+      background: rgba(12,11,9,0.96);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 100%; max-width: 1280px; margin: 0 auto; padding: 0 56px;
+    }
+    @media (max-width: 768px) { .nav-inner { padding: 0 24px; } }
+
+    .nav-logo {
+      font-family: var(--ff);
+      font-size: 17px; font-weight: 600;
+      letter-spacing: 0.28em; text-transform: uppercase; color: var(--text);
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 44px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--ffs);
+      font-size: 11.5px; font-weight: 400;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--text2); transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* Outlined CTA — right of nav */
+    .nav-cta {
+      font-family: var(--ffs);
+      font-size: 11.5px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--text);
+      border: 1px solid rgba(232,224,208,0.35);
+      padding: 9px 22px; background: none;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .nav-cta:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Mobile */
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; padding: 4px;
+    }
+    .nav-toggle span { display: block; width: 22px; height: 1px; background: var(--text); }
+    @media (max-width: 860px) {
+      .nav-links {
+        display: none; position: absolute; top: var(--nav); left: 0; right: 0;
+        background: rgba(12,11,9,0.98); flex-direction: column;
+        padding: 28px 24px; gap: 20px; border-bottom: 1px solid var(--rule);
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* =============================================================
+       HERO  — full viewport, dark bg photo, mixed serif heading
+    ============================================================= */
+    .hero {
+      position: relative; height: 100vh; min-height: 680px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1800&q=85') center/cover no-repeat;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(12,11,9,0.38) 0%,
+        rgba(12,11,9,0.52) 35%,
+        rgba(12,11,9,0.72) 75%,
+        rgba(12,11,9,0.90) 100%
+      );
+    }
+    .hero-content { position: relative; z-index: 1; padding: 0 24px; max-width: 860px; }
+
+    /* Gold eyebrow — "ESTABLISHED 1987" equivalent */
+    .hero-eyebrow {
+      font-family: var(--ffs);
+      font-size: 11px; font-weight: 400;
+      letter-spacing: 0.38em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+      display: flex; align-items: center; justify-content: center; gap: 18px;
+      opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; display: block; width: 36px; height: 1px;
+      background: var(--gold); opacity: 0.5;
+    }
+
+    /* Large mixed heading — upright + italic contrast */
+    .hero-h1 {
+      font-family: var(--ff);
+      font-size: clamp(56px, 9.5vw, 116px);
+      font-weight: 400; line-height: 1.02; color: var(--text);
+      margin-bottom: 30px;
+      opacity: 0; animation: fadeUp 1.1s ease 0.5s forwards;
+    }
+    .hero-h1 em { font-style: italic; font-weight: 300; }
+
+    .hero-p {
+      font-family: var(--ff);
+      font-size: clamp(15px, 1.8vw, 20px);
+      font-weight: 300; font-style: italic;
+      color: rgba(232,224,208,0.55); line-height: 1.8;
+      max-width: 520px; margin: 0 auto 52px;
+      opacity: 0; animation: fadeUp 1.1s ease 0.7s forwards;
+    }
+
+    /* Gold solid button — "RESERVE YOUR EXPERIENCE" */
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold); color: var(--bg);
+      font-family: var(--ffs);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      padding: 20px 72px; border: none;
+      transition: background 0.28s; line-height: 1;
+    }
+    .btn-gold:hover { background: var(--gold-lt); }
+
+    .hero-cta-wrap {
+      opacity: 0; animation: fadeUp 1.1s ease 0.9s forwards;
+    }
+
+    /* Scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
+    }
+    .scroll-bar { width: 1px; height: 44px; background: linear-gradient(to bottom, var(--text), transparent); animation: scrollPulse 2.5s ease infinite; opacity: 0.4; }
+    .scroll-lbl { font-family: var(--ffs); font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--text2); }
+
+    /* =============================================================
+       STORY / ABOUT  — "Artistry on Every Plate" layout
+    ============================================================= */
+    .story { padding: 140px 0; background: var(--bg); }
+
+    .story-header { text-align: center; margin-bottom: 80px; }
+
+    .story-grid {
+      display: grid; grid-template-columns: 1.15fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    @media (max-width: 900px) {
+      .story-grid { grid-template-columns: 1fr; gap: 56px; }
+    }
+
+    .story-img {
+      position: relative; overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .story-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.85) saturate(0.88);
+      transition: transform 0.9s ease, filter 0.7s ease;
+    }
+    .story-img:hover img { transform: scale(1.04); filter: brightness(0.92) saturate(0.96); }
+
+    .story-text { }
+
+    .story-italic-h {
+      font-family: var(--ff);
+      font-size: clamp(28px, 3.2vw, 40px);
+      font-weight: 300; font-style: italic; line-height: 1.2;
+      color: var(--text); margin-bottom: 30px;
+    }
+    .story-body {
+      font-family: var(--ffs);
+      font-size: 14.5px; font-weight: 300; line-height: 1.95;
+      color: var(--text2); margin-bottom: 18px;
+    }
+
+    .story-rule { height: 1px; background: var(--rule); margin: 44px 0; }
+
+    .story-stats { display: flex; }
+    .s-stat {
+      flex: 1; padding: 0 28px;
+      border-right: 1px solid var(--rule);
+    }
+    .s-stat:first-child { padding-left: 0; }
+    .s-stat:last-child { border-right: none; }
+    .s-num {
+      font-family: var(--ff);
+      font-size: 50px; font-weight: 400; color: var(--gold);
+      line-height: 1; display: block; margin-bottom: 10px;
+    }
+    .s-lbl {
+      font-family: var(--ffs);
+      font-size: 10px; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text3); display: block; line-height: 1.6;
+    }
+
+    /* =============================================================
+       DISHES GALLERY  — dark, edge-to-edge grid
+    ============================================================= */
+    .dishes {
+      padding-top: 120px;
+      background: var(--bg2);
+      border-top: 1px solid var(--rule);
+    }
+    .dishes-header { padding-bottom: 72px; }
+
+    .dishes-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    @media (max-width: 900px) { .dishes-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 540px) { .dishes-grid { grid-template-columns: 1fr; } }
+
+    .dish-card {
+      position: relative; overflow: hidden;
+      aspect-ratio: 3/4; background: var(--bg3);
+    }
+    .dish-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.72) saturate(0.82);
+      transition: transform 0.95s ease, filter 0.7s ease;
+    }
+    .dish-card:hover img { transform: scale(1.07); filter: brightness(0.88) saturate(1); }
+    .dish-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(12,11,9,0.95) 0%, rgba(12,11,9,0.08) 55%, transparent 100%);
+    }
+    .dish-body {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 26px;
+      transform: translateY(10px); opacity: 0.82;
+      transition: transform 0.42s ease, opacity 0.42s ease;
+    }
+    .dish-card:hover .dish-body { transform: translateY(0); opacity: 1; }
+
+    .dish-tag {
+      font-family: var(--ffs);
+      font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+      color: var(--gold); display: block; margin-bottom: 10px;
+    }
+    .dish-name {
+      font-family: var(--ff);
+      font-size: 22px; font-weight: 500; color: var(--text); line-height: 1.15; margin-bottom: 5px;
+    }
+    .dish-sub {
+      font-family: var(--ff);
+      font-size: 13.5px; font-style: italic; font-weight: 300;
+      color: rgba(232,224,208,0.48); line-height: 1.4;
+    }
+    .dish-story-txt {
+      font-family: var(--ffs); font-size: 12.5px; font-weight: 300; line-height: 1.65;
+      color: rgba(232,224,208,0.35);
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.42s ease, color 0.42s ease; margin-top: 0;
+    }
+    .dish-card:hover .dish-story-txt { max-height: 60px; color: rgba(232,224,208,0.44); margin-top: 10px; }
+
+    /* =============================================================
+       RESERVATIONS  — matches Aurélien form section exactly
+    ============================================================= */
+    .reservations {
+      padding: 140px 0 120px;
+      background: var(--bg);
+      border-top: 1px solid var(--rule);
+    }
+
+    .res-head { text-align: center; margin-bottom: 80px; }
+    .res-head .section-title { margin-bottom: 20px; }
+    .res-head p {
+      font-family: var(--ff);
+      font-size: clamp(15px, 1.8vw, 19px); font-style: italic; font-weight: 300;
+      color: var(--text2); line-height: 1.75; max-width: 540px; margin: 0 auto;
+    }
+
+    /* Available slots — clickable rows */
+    .slots-wrap { margin-bottom: 64px; }
+    .slots-lbl {
+      font-family: var(--ffs); font-size: 11px; font-weight: 400;
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--text2); margin-bottom: 0; display: block;
+    }
+
+    .slot-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 0; border-bottom: 1px solid var(--rule);
+      cursor: pointer; transition: all 0.25s; position: relative;
+    }
+    .slot-row:first-of-type { border-top: 1px solid var(--rule); margin-top: 20px; }
+    /* Gold left accent on hover/select */
+    .slot-row::before {
+      content: ''; position: absolute; left: -24px; top: 0; bottom: 0;
+      width: 2px; background: var(--gold); opacity: 0; transition: opacity 0.25s;
+    }
+    .slot-row:hover::before, .slot-row.selected::before { opacity: 1; }
+    .slot-row:hover .slot-date, .slot-row.selected .slot-date { color: var(--text); }
+    .slot-row.booked { opacity: 0.32; cursor: not-allowed; pointer-events: none; }
+
+    .slot-left { flex: 1; }
+    .slot-date {
+      font-family: var(--ff); font-size: 17px; font-weight: 500;
+      letter-spacing: 0.03em; color: var(--text2); transition: color 0.25s;
+    }
+    .slot-sub {
+      font-family: var(--ff); font-size: 14px; font-style: italic; font-weight: 300;
+      color: var(--text3); margin-top: 3px;
+    }
+    .slot-time {
+      font-family: var(--ff); font-size: 17px; font-weight: 400;
+      letter-spacing: 0.06em; color: var(--text3); margin-right: 24px;
+    }
+    .slot-badge {
+      font-family: var(--ffs); font-size: 10px; font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase; padding: 5px 14px;
+      border: 1px solid;
+    }
+    .slot-badge.open { color: var(--gold); border-color: var(--gold-bd); }
+    .slot-badge.full { color: var(--text3); border-color: rgba(74,68,56,0.5); }
+    .slot-row.selected .slot-badge.open { background: var(--gold); color: var(--bg); }
+
+    /* Reservation form container — Aurélien style */
+    .res-form-box {
+      border: 1px solid var(--rule2);
+      background: var(--bg3);
+      padding: 60px 68px;
+      display: none;
+    }
+    .res-form-box.visible { display: block; }
+    @media (max-width: 768px) { .res-form-box { padding: 36px 24px; } }
+
+    /* Selected slot banner inside form */
+    .slot-banner {
+      display: flex; align-items: center; gap: 16px;
+      padding-bottom: 36px; margin-bottom: 44px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .slot-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    .slot-banner-info { flex: 1; }
+    .slot-banner-lbl {
+      font-family: var(--ffs); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--text2); display: block; margin-bottom: 4px;
+    }
+    .slot-banner-val {
+      font-family: var(--ff); font-size: 18px; font-weight: 400;
+      letter-spacing: 0.03em; color: var(--text);
+    }
+    .btn-change {
+      font-family: var(--ffs); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text3); background: none; border: none;
+      text-decoration: underline; text-underline-offset: 4px; transition: color 0.2s;
+    }
+    .btn-change:hover { color: var(--gold); }
+
+    /* Form rows — matches the 3-col / 2-col layout from Aurélien */
+    .fr3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-bottom: 28px; }
+    .fr2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 28px; }
+    .fr1 { margin-bottom: 28px; }
+    @media (max-width: 720px) { .fr3, .fr2 { grid-template-columns: 1fr; } }
+
+    /* Field */
+    .fg { display: flex; flex-direction: column; }
+    .fg label {
+      font-family: var(--ffs); font-size: 10.5px; font-weight: 500;
+      letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--text2); margin-bottom: 10px;
+    }
+    .fg input, .fg select, .fg textarea {
+      background: var(--bg-input);
+      border: 1px solid rgba(201,168,112,0.14); border-radius: 0;
+      padding: 14px 18px;
+      font-family: var(--ff); font-size: 16px; font-weight: 300;
+      color: var(--text); outline: none;
+      transition: border-color 0.25s; width: 100%; appearance: none;
+    }
+    .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--gold); }
+    .fg input::placeholder, .fg textarea::placeholder { color: var(--text3); font-style: italic; }
+    .fg select { cursor: pointer; }
+    .fg select option { background: #1C1A15; color: var(--text); }
+    .fg textarea { resize: vertical; min-height: 110px; line-height: 1.65; }
+
+    /* Full-width gold submit — "COMPLETE RESERVATION" */
+    .form-actions { margin-top: 44px; }
+    .btn-submit {
+      width: 100%; background: var(--gold); color: var(--bg);
+      font-family: var(--ffs); font-size: 12px; font-weight: 500;
+      letter-spacing: 0.34em; text-transform: uppercase;
+      padding: 22px; border: none; transition: background 0.28s;
+    }
+    .btn-submit:hover { background: var(--gold-lt); }
+    .btn-submit:disabled { opacity: 0.42; cursor: not-allowed; }
+    .form-fine {
+      font-family: var(--ff); font-size: 13.5px; font-style: italic; font-weight: 300;
+      color: var(--text3); text-align: center; margin-top: 20px; line-height: 1.7;
+    }
+
+    /* Success */
+    .form-ok { display: none; text-align: center; padding: 72px 20px; }
+    .form-ok.visible { display: block; }
+    .ok-rule { width: 44px; height: 1px; background: var(--gold); margin: 0 auto 36px; }
+    .ok-h { font-family: var(--ff); font-size: 40px; font-weight: 400; color: var(--text); margin-bottom: 18px; }
+    .ok-p { font-family: var(--ff); font-size: 19px; font-style: italic; font-weight: 300; color: var(--text2); line-height: 1.75; }
+
+    /* =============================================================
+       FOOTER  — three column: LOCATION | HOURS | CONTACT
+    ============================================================= */
+    footer {
+      padding: 80px 0 56px;
+      border-top: 1px solid var(--rule);
+      background: var(--bg);
+    }
+    .footer-cols {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 40px; text-align: center;
+      padding-bottom: 64px; border-bottom: 1px solid var(--rule); margin-bottom: 48px;
+    }
+    @media (max-width: 640px) { .footer-cols { grid-template-columns: 1fr; gap: 36px; } }
+
+    .ft-col-lbl {
+      font-family: var(--ffs); font-size: 11px; font-weight: 400;
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--gold); display: block; margin-bottom: 18px;
+    }
+    .ft-col-body {
+      font-family: var(--ff); font-size: 16px; font-weight: 300;
+      color: var(--text2); line-height: 1.9;
+    }
+    .ft-col-body a { color: inherit; transition: color 0.2s; }
+    .ft-col-body a:hover { color: var(--gold); }
+
+    .footer-bottom { text-align: center; }
+    .footer-logo {
+      font-family: var(--ff); font-size: 20px; font-weight: 600;
+      letter-spacing: 0.30em; text-transform: uppercase;
+      color: var(--text); display: block; margin-bottom: 12px;
+    }
+    .footer-copy {
+      font-family: var(--ffs); font-size: 10.5px; letter-spacing: 0.1em;
+      color: var(--text3);
+    }
+
+    /* =============================================================
+       KEYFRAMES
+    ============================================================= */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scrollPulse { 0%,100% { opacity: 0.25; } 50% { opacity: 0.6; } }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--text3); }
+    ::selection { background: rgba(201,168,112,0.22); color: var(--text); }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===============================================================
+       NAVIGATION
+  =============================================================== -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo">Ru's Table</a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#story">Story</a></li>
+        <li><a href="#dishes">Dishes</a></li>
+        <li><a href="#reservations">Reserve</a></li>
+      </ul>
+
+      <button class="nav-cta" onclick="document.getElementById('reservations').scrollIntoView({behavior:'smooth'})">Reserve</button>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- ===============================================================
+       HERO
+  =============================================================== -->
+  <section class="hero" id="top">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Culinary Explorer &amp; Host</div>
+
+      <!-- Mixed upright + italic — the Aurélien signature -->
+      <h1 class="hero-h1">
+        A Table Set for<br>
+        <em>Every Story</em>
+      </h1>
+
+      <p class="hero-p">Where shared meals become lasting memories, and every dish opens a conversation.</p>
+
+      <div class="hero-cta-wrap">
+        <a href="#reservations" class="btn-gold">Reserve Your Experience</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-bar"></div>
+      <span class="scroll-lbl">Scroll</span>
+    </div>
+  </section>
+
+
+  <!-- ===============================================================
+       STORY / ABOUT  — "Artistry on Every Plate" structure
+  =============================================================== -->
+  <section class="story" id="story">
+    <div class="wrap">
+
+      <div class="story-header rv">
+        <span class="section-label">The Story</span>
+        <h2 class="section-title">A Story Told<br>in Flavor</h2>
+      </div>
+
+      <div class="story-grid">
+        <!-- Large photo — left column -->
+        <div class="story-img rv">
+          <!--
+            ✏️ EASY EDIT: Replace the src below with your own photo.
+               Example: src="my-photo.jpg"  (save the image in the same folder as this file)
+          -->
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&q=80" alt="Ru's culinary work">
+        </div>
+
+        <!-- Text — right column -->
+        <div class="rv d2">
+          <p class="story-italic-h">Where Every Meal<br>Tells a Story</p>
+
+          <p class="story-body">Food has always been my way of understanding the world. From late-night ramen counters in Tokyo to farmhouse kitchens in Tuscany, I've spent years collecting flavors, techniques, and the stories woven between them.</p>
+
+          <p class="story-body">I believe the table is the most honest place on earth — no pretense, just people and conversation. I host intimate dinners for small groups of friends and curious strangers, and I believe every meal shared is a small act of generosity.</p>
+
+          <div class="story-rule"></div>
+
+          <div class="story-stats">
+            <div class="s-stat rv d2">
+              <span class="s-num">12+</span>
+              <span class="s-lbl">Cuisines<br>Explored</span>
+            </div>
+            <div class="s-stat rv d3">
+              <span class="s-num">40+</span>
+              <span class="s-lbl">Dishes<br>Documented</span>
+            </div>
+            <div class="s-stat rv d4">
+              <span class="s-num">∞</span>
+              <span class="s-lbl">Stories<br>Shared</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ===============================================================
+       DISHES GALLERY
+  =============================================================== -->
+  <section class="dishes" id="dishes">
+    <div class="wrap">
+      <div class="dishes-header rv">
+        <span class="section-label">The Dishes</span>
+        <h2 class="section-title">Artistry on Every Plate</h2>
+      </div>
+    </div>
+
+    <!-- Edge-to-edge grid — dishes rendered by JS -->
+    <div class="dishes-grid" id="dishesGrid"></div>
+  </section>
+
+
+  <!-- ===============================================================
+       RESERVATIONS  — matches Aurélien reservation section
+  =============================================================== -->
+  <section class="reservations" id="reservations">
+    <div class="wrap">
+
+      <!-- Header -->
+      <div class="res-head rv">
+        <span class="section-label">Reservations</span>
+        <h2 class="section-title">Reserve Your Seat</h2>
+        <p>Join me for an intimate evening. Select an available date below and complete your reservation — no back-and-forth, no chaos.</p>
+      </div>
+
+      <!-- Slot rows — rendered by JS -->
+      <div class="slots-wrap rv">
+        <span class="slots-lbl">Available Evenings</span>
+        <div id="slotsGrid"></div>
+      </div>
+
+      <!-- Form — shown after a slot is selected -->
+      <div class="res-form-box" id="resFormBox">
+
+        <!-- Form content -->
+        <div id="formContent">
+
+          <!-- Selected slot banner -->
+          <div class="slot-banner">
+            <div class="slot-dot"></div>
+            <div class="slot-banner-info">
+              <span class="slot-banner-lbl">Selected Evening</span>
+              <span class="slot-banner-val" id="bannerVal">—</span>
+            </div>
+            <button class="btn-change" onclick="changeSlot()">Change</button>
+          </div>
+
+          <!-- Form — three-column then two-column, matching Aurélien -->
+          <form id="resForm">
+            <div class="fr3">
+              <div class="fg">
+                <label>Full Name</label>
+                <input name="full_name" type="text" placeholder="Your name" required>
+              </div>
+              <div class="fg">
+                <label>Email Address</label>
+                <input name="email" type="email" placeholder="your@email.com" required>
+              </div>
+              <div class="fg">
+                <label>Guests</label>
+                <select name="guests">
+                  <option value="1">Just me</option>
+                  <option value="2">2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5">5 guests</option>
+                  <option value="6">6 guests</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="fr2">
+              <div class="fg">
+                <label>Dietary Restrictions</label>
+                <input name="dietary" type="text" placeholder="Vegetarian, allergies, etc.">
+              </div>
+              <div class="fg">
+                <label>Occasion</label>
+                <input name="occasion" type="text" placeholder="Birthday, catch-up, curious…">
+              </div>
+            </div>
+
+            <div class="fr1">
+              <div class="fg">
+                <label>Message to Ru <span style="font-style:italic;opacity:0.5;font-size:0.9em">(optional)</span></label>
+                <textarea name="note" placeholder="Anything you'd like me to know before the evening…"></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" id="formSubmit">Complete Reservation</button>
+              <p class="form-fine">Ru will personally confirm your seat within 24 hours.<br>By reserving, you agree to let great food change your evening.</p>
+            </div>
+          </form>
+
+        </div>
+
+        <!-- Success state -->
+        <div class="form-ok" id="formOk">
+          <div class="ok-rule"></div>
+          <h3 class="ok-h">You're on the list</h3>
+          <p class="ok-p">Your reservation request has been received.<br>Ru will be in touch to confirm your seat. See you at the table.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===============================================================
+       FOOTER  — Location | Hours | Contact
+  =============================================================== -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-cols">
+        <div>
+          <span class="ft-col-lbl">Location</span>
+          <div class="ft-col-body">Stanford, California<br>San Francisco Bay Area</div>
+        </div>
+        <div>
+          <span class="ft-col-lbl">Evenings</span>
+          <div class="ft-col-body">Weekends &amp; select weekdays<br>See available seatings above</div>
+        </div>
+        <div>
+          <span class="ft-col-lbl">Contact</span>
+          <div class="ft-col-body">
+            <a href="mailto:ruchen0126@gmail.com">ruchen0126@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span class="footer-logo">Ru's Table</span>
+        <p class="footer-copy">© 2026 Ru Chen · All rights reserved</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ===============================================================
+       EMAILJS
+  =============================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script>
+  // ================================================================
+  //  🍽️  RU'S TABLE — YOUR CONTENT LIVES HERE
+  //  This is the only section you need to edit to manage the site.
+  // ================================================================
+
+
+  // ── 1. YOUR DISHES ──────────────────────────────────────────────
+  //  To ADD: copy any { ... } block, paste it at the end (before "]"),
+  //  separated by a comma. Change the image to a URL or local filename.
+  // ────────────────────────────────────────────────────────────────
+  const DISHES = [
+    {
+      name:     "Seared Hamachi",
+      subtitle: "Yuzu kosho · micro shiso · crispy garlic",
+      story:    "A late-night counter in Shinjuku taught me that simplicity is the highest technique.",
+      image:    "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=700&q=80",
+      tag:      "Japanese"
+    },
+    {
+      name:     "Hand-Pulled Noodles",
+      subtitle: "Slow-braised pork belly · fermented black bean · chili oil",
+      story:    "Three years trying to recreate a bowl I had in Xi'an. Getting closer every time.",
+      image:    "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=700&q=80",
+      tag:      "Chinese"
+    },
+    {
+      name:     "Cacio e Pepe Risotto",
+      subtitle: "Aged Pecorino Romano · Tellicherry pepper · lemon zest",
+      story:    "Two Roman classics merged into one. Stranger and better than either.",
+      image:    "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=700&q=80",
+      tag:      "Italian"
+    },
+    {
+      name:     "Smash Burger",
+      subtitle: "Double patty · house American cheese · brioche · special sauce",
+      story:    "Twelve iterations to nail the smash. Worth every single one.",
+      image:    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=700&q=80",
+      tag:      "American"
+    },
+    {
+      name:     "Miso-Glazed Black Cod",
+      subtitle: "48-hr miso cure · pickled daikon · dashi beurre blanc",
+      story:    "East meets West on a single plate. The butter sauce changed everything.",
+      image:    "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=700&q=80",
+      tag:      "Fusion"
+    },
+    {
+      name:     "Burnt Basque Cheesecake",
+      subtitle: "San Sebastián style · 70% dark chocolate · fleur de sel",
+      story:    "Controlled chaos as dessert. Beautifully imperfect by design.",
+      image:    "https://images.unsplash.com/photo-1524351199678-941a58a3df50?w=700&q=80",
+      tag:      "Dessert"
+    }
+  ];
+
+
+  // ── 2. YOUR GOOGLE SHEET URL — edit slots without touching code ──
+  //
+  //  ONE-TIME SETUP (~3 minutes):
+  //
+  //  Step 1 → Go to sheets.google.com and create a new sheet
+  //
+  //  Step 2 → Set up exactly 4 columns. Row 1 must be these headers:
+  //             A          B        C                              D
+  //           Date       Time    Label                        Available
+  //           ────────────────────────────────────────────────────────
+  //           Saturday,  7:00 PM  Intimate Dinner · 6 guests   TRUE
+  //           March 21
+  //           Sunday,    6:30 PM  Sunday Supper · 4 guests     FALSE
+  //           March 22
+  //
+  //           TRUE  = slot shows as Available (clickable)
+  //           FALSE = slot shows as Full (greyed out)
+  //
+  //  Step 3 → File → Share → Publish to web
+  //           → "Entire Document" → "Comma-separated values (.csv)"
+  //           → click Publish → copy the URL that appears
+  //
+  //  Step 4 → Paste that URL below, replacing YOUR_GOOGLE_SHEET_CSV_URL
+  //
+  //  Step 5 → Re-upload this file to GitHub one final time
+  //
+  //  After that: open your sheet, change a date or flip TRUE↔FALSE,
+  //  and your live site updates within seconds. No code, ever again.
+  // ────────────────────────────────────────────────────────────────
+  const SLOTS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxRDtee9wONW0OnTnbmTLyfPL-ACJNOYNMizB7vHzcOLxvhJ7FPOZ32sanWjdWX7KpNLvNoKJI0P9X/pub?output=csv';
+
+
+  // ── 3. EMAILJS SETTINGS ──────────────────────────────────────────
+  //  Step 1: emailjs.com → create free account
+  //  Step 2: Email Services → connect Gmail → copy Service ID
+  //  Step 3: Email Templates → create template using variables:
+  //          {{from_name}} {{from_email}} {{slot_date}} {{slot_time}}
+  //          {{slot_label}} {{guests}} {{dietary}} {{occasion}} {{note}}
+  //          → copy Template ID
+  //  Step 4: Account → General → copy Public Key
+  //  Paste all three values below, then re-upload the file.
+  // ────────────────────────────────────────────────────────────────
+  const EMAIL = {
+    serviceId:  'YOUR_SERVICE_ID',    // ← replace
+    templateId: 'YOUR_TEMPLATE_ID',   // ← replace
+    publicKey:  'YOUR_PUBLIC_KEY',    // ← replace
+    myEmail:    'ruchen0126@gmail.com'
+  };
+
+
+  // ================================================================
+  //  🚫  DO NOT EDIT BELOW THIS LINE
+  // ================================================================
+
+  if (EMAIL.publicKey !== 'YOUR_PUBLIC_KEY') emailjs.init(EMAIL.publicKey);
+
+  // ── Render dishes ─────────────────────────────────────────────────
+  (function() {
+    document.getElementById('dishesGrid').innerHTML = DISHES.map(d => `
+      <div class="dish-card">
+        <img src="${d.image}" alt="${d.name}" loading="lazy">
+        <div class="dish-grad"></div>
+        <div class="dish-body">
+          <span class="dish-tag">${d.tag}</span>
+          <div class="dish-name">${d.name}</div>
+          <div class="dish-sub">${d.subtitle}</div>
+          <div class="dish-story-txt">${d.story}</div>
+        </div>
+      </div>
+    `).join('');
+  })();
+
+  // ── Slots: fetch from Google Sheet or fall back to demo data ─────
+  let activeSlot = null;
+  let loadedSlots = [];
+
+  // Parse a single CSV line, handling quoted commas correctly
+  function parseCSVLine(line) {
+    const cols = []; let cur = ''; let inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    return cols;
+  }
+
+  // Convert raw CSV text → slots array
+  function parseSheetCSV(csv) {
+    const rows = csv.trim().split('\n').slice(1); // skip header row
+    return rows
+      .map(row => { const c = parseCSVLine(row); return { date: c[0], time: c[1], label: c[2], available: (c[3] || '').toUpperCase() === 'TRUE' }; })
+      .filter(s => s.date && s.date.length > 0);
+  }
+
+  // Demo slots — shown when Google Sheet not yet connected
+  const DEMO_SLOTS = [
+    { date: 'Saturday, March 21, 2026', time: '7:00 PM',  label: 'Intimate Dinner · Up to 6 guests',       available: true  },
+    { date: 'Sunday, March 22, 2026',   time: '6:30 PM',  label: 'Sunday Evening Supper · Up to 4 guests', available: true  },
+    { date: 'Friday, March 27, 2026',   time: '7:30 PM',  label: 'Friday Tasting Night · Up to 8 guests',  available: false },
+    { date: 'Saturday, March 28, 2026', time: '7:00 PM',  label: 'Themed Dinner · Up to 6 guests',         available: true  }
+  ];
+
+  function renderSlots(slots) {
+    loadedSlots = slots;
+    const g = document.getElementById('slotsGrid');
+    if (!slots.length) {
+      g.innerHTML = `<p style="font-family:var(--ff);font-style:italic;color:var(--text2);padding:28px 0;">No upcoming evenings scheduled. Check back soon.</p>`;
+      return;
+    }
+    g.innerHTML = slots.map((s, i) => `
+      <div class="slot-row ${s.available ? '' : 'booked'}"
+           onclick="${s.available ? `selectSlot(${i})` : ''}"
+           role="${s.available ? 'button' : 'presentation'}"
+           tabindex="${s.available ? '0' : '-1'}"
+           onkeydown="${s.available ? `if(event.key==='Enter')selectSlot(${i})` : ''}">
+        <div class="slot-left">
+          <div class="slot-date">${s.date}</div>
+          <div class="slot-sub">${s.label}</div>
+        </div>
+        <div class="slot-time">${s.time}</div>
+        <div class="slot-badge ${s.available ? 'open' : 'full'}">${s.available ? 'Available' : 'Full'}</div>
+      </div>
+    `).join('');
+  }
+
+  // Load slots — live from Google Sheet if configured, else demo data
+  (async function loadSlots() {
+    if (SLOTS_URL === 'YOUR_GOOGLE_SHEET_CSV_URL') {
+      renderSlots(DEMO_SLOTS); // Google Sheet not yet set up — show demo
+      return;
+    }
+    try {
+      const res = await fetch(SLOTS_URL);
+      if (!res.ok) throw new Error('Sheet fetch failed');
+      const csv = await res.text();
+      const slots = parseSheetCSV(csv);
+      renderSlots(slots.length ? slots : DEMO_SLOTS);
+    } catch (err) {
+      console.warn('Could not load Google Sheet — showing demo slots.', err);
+      renderSlots(DEMO_SLOTS);
+    }
+  })();
+
+  // ── Select a slot ─────────────────────────────────────────────────
+  function selectSlot(i) {
+    activeSlot = loadedSlots[i];
+
+    // Highlight row
+    document.querySelectorAll('.slot-row').forEach((r, idx) => {
+      r.classList.toggle('selected', idx === i);
+    });
+
+    // Populate banner
+    document.getElementById('bannerVal').textContent =
+      `${activeSlot.date} · ${activeSlot.time} — ${activeSlot.label}`;
+
+    // Reset & show form
+    const box = document.getElementById('resFormBox');
+    document.getElementById('formContent').style.display = 'block';
+    document.getElementById('formOk').classList.remove('visible');
+    document.getElementById('resForm').reset();
+    const btn = document.getElementById('formSubmit');
+    btn.disabled = false;
+    btn.textContent = 'Complete Reservation';
+
+    box.classList.add('visible');
+    setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  }
+
+  function changeSlot() {
+    document.getElementById('resFormBox').classList.remove('visible');
+    document.querySelectorAll('.slot-row').forEach(r => r.classList.remove('selected'));
+    activeSlot = null;
+    document.getElementById('slotsGrid').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Form submit ───────────────────────────────────────────────────
+  document.getElementById('resForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('formSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const fd = new FormData(this);
+    const params = {
+      from_name:   fd.get('full_name'),
+      from_email:  fd.get('email'),
+      slot_date:   activeSlot?.date  || '—',
+      slot_time:   activeSlot?.time  || '—',
+      slot_label:  activeSlot?.label || '—',
+      guests:      fd.get('guests'),
+      dietary:     fd.get('dietary')  || 'None',
+      occasion:    fd.get('occasion') || 'Not specified',
+      note:        fd.get('note')     || 'None',
+      to_email:    EMAIL.myEmail
+    };
+
+    // Demo mode if EmailJS not yet configured
+    if (EMAIL.serviceId === 'YOUR_SERVICE_ID') {
+      console.log('📬 Demo mode — would send:', params);
+      showSuccess(); return;
+    }
+
+    try {
+      await emailjs.send(EMAIL.serviceId, EMAIL.templateId, params);
+      showSuccess();
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = 'Complete Reservation';
+      alert('Something went wrong. Please email ' + EMAIL.myEmail + ' directly.');
+    }
+  });
+
+  function showSuccess() {
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('formOk').classList.add('visible');
+  }
+
+  // ── Navigation ────────────────────────────────────────────────────
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+  });
+
+  // ── Scroll reveal ─────────────────────────────────────────────────
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  </script>
+
+</body>
+</html>
