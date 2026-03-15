@@ -238,7 +238,7 @@ footer{background:var(--bg3);border-top:1px solid var(--rule);padding:72px 0 48p
             <div class="field">
               <label for="guests">Guests</label>
               <select id="guests" name="guests">
-                <option>1</option><option selected>2</option><option>3</option><option>4</option>
+                <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
               </select>
             </div>
           </div>
@@ -358,6 +358,24 @@ emailjs.init(EMAIL.publicKey);
   });
 })();
 
+/* ─── GUEST DROPDOWN HELPER ─── */
+function parseMaxGuests(label){
+  if(!label) return 8;
+  const m = label.match(/up to (\d+)/i);
+  return m ? parseInt(m[1],10) : 8;
+}
+function updateGuestsDropdown(max){
+  const sel = document.getElementById('guests');
+  const prev = parseInt(sel.value,10);
+  sel.innerHTML = '';
+  for(let i=1;i<=max;i++){
+    const opt = document.createElement('option');
+    opt.value = i; opt.textContent = i;
+    if(i === (prev<=max ? prev : 2)) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
 /* ─── RENDER SLOTS ─── */
 let selectedSlotData = null;
 function renderSlots(slots){
@@ -378,6 +396,7 @@ function renderSlots(slots){
       btn.classList.add('selected');
       selectedSlotData = s;
       document.getElementById('selectedSlot').value = `${s.date} ${s.time}`;
+      updateGuestsDropdown(parseMaxGuests(s.label));
     });
     wrap.appendChild(btn);
   });
